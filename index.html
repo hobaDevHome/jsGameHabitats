@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--
+	NOTES:
+	1. All tokens are represented by '$' sign in the template.
+	2. You can write your code only wherever mentioned.
+	3. All occurrences of existing tokens will be replaced by their appropriate values.
+	4. Blank lines will be removed automatically.
+	5. Remove unnecessary comments before creating your template.
+-->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="authoring-tool" content="Adobe_Animate_CC">
+<title>index</title>
+<!-- write your code here -->
+<style>
+  #animation_container, #_preload_div_ {
+	position:absolute;
+	margin:auto;
+	left:0;right:0;
+	top:0;bottom:0;
+  }
+</style>
+<script src="libs/1.0.0/createjs.min.js"></script>
+<script src="index.js?1685000389948"></script>
+<script>
+// Global Scripts
+	var answered = 0;
+var numberRange = 9;
+var systemSounds = ["correctSound", "wrongSound", "clickSound", "endSound", "Tip1", "Tip2", "PutSound", "Tip",
+	"AB1", "AB2", "AB3", "AB4", "RT1", "RT2", "RT3", "RT4", "FR1", "FR2",
+];
+/// correct and wrong sounds 
+var correctSounds = ["correct_01", "correct_02", "correct_03", "correct_04", "correct_05", "correct_06" ]
+var wrongSounds = ["wrong_01", "wrong_02", "wrong_03","wrong_04"]
+////
+function playRandomCorrect() {
+		var randomSound = getRandomRange(0, 5)
+		createjs.Sound.stop();
+		var instance = createjs.Sound.play("correctSound");
+		instance.on("complete", handleComplete);
+		function handleComplete() {
+			createjs.Sound.play(correctSounds[randomSound]);
+		}
+	}
+	function playRandomWrong() {
+		var randomSound = getRandomRange(0, 3)
+		createjs.Sound.stop();
+		var instance = createjs.Sound.play("wrongSound");
+		instance.on("complete", handleComplete);
+		function handleComplete() {
+			createjs.Sound.play(wrongSounds[randomSound]);
+		}
+	}
+	////
+var currTip = 0;
+var toolSt;
+var isdragStarted = false;
+var currHit;
+var currHit1;
+var currHit2;
+var currPos1;
+var currPos2;
+var currPos3;
+var currPos4;
+var currPos5;
+var currPos6;
+var currPos7;
+var currPos8;
+var currPos;
+var currStar;
+var counter = 0;
+var levels = 0;
+var stars;
+var max;
+posCounter1 = 1
+posCounter2 = 2
+posCounter = 0;
+function getRandomRange(min, max) {
+	return Math.round((Math.random() * max) + min);
+}
+function startDragG(e) {
+	var n = e.currentTarget.name;
+	currPos = getPos(n)
+	currHit = getHit(n)
+	e.currentTarget.scaleX = 0.5;
+	e.currentTarget.scaleY = 0.5;
+	if (isdragStarted == false) {
+		e.currentTarget.addEventListener("pressup", stopDragG);
+		isdragStarted = true;
+	}
+	var p = toolSt.globalToLocal(e.stageX, e.stageY);
+	e.currentTarget.x = p.x;
+	e.currentTarget.y = p.y;
+}
+function stopDragG(e) {
+	var n = e.currentTarget.name;
+	e.currentTarget.removeEventListener("pressup", stopDragG);
+	var pt = currHit.globalToLocal(stage.mouseX, stage.mouseY);
+	if (currHit.hitTest(pt.x, pt.y)) {
+		playRandomCorrect()
+		counter++;
+		e.currentTarget.x = getFinalPos(n)[0];
+		e.currentTarget.y = getFinalPos(n)[1];
+		e.currentTarget.removeEventListener("pressmove", startDragG);
+		if (counter === max) {
+			toolSt.gotoAndPlay(toolSt.currnetFrame + 1);
+			counter = 0
+		}
+	} else {
+		console.log('out')
+		playRandomWrong()
+		e.currentTarget.scaleX = 1.0;
+		e.currentTarget.scaleY = 1.0;
+		e.currentTarget.x = currPos[0];
+		e.currentTarget.y = currPos[1];
+	}
+	isdragStarted = false;
+}
+function getPos(n) {
+	var cpos;
+	if ((n === "x1") || (n === "x21") || (n === "x31")) {
+		cpos = currPos1;
+	}
+	if ((n === "x2") || (n === "x22") || (n === "x32")) {
+		cpos = currPos2;
+	}
+	if ((n === "x3") || (n === "x23") || (n === "x33")) {
+		cpos = currPos3;
+	}
+	if ((n === "x4") || (n === "x24") || (n === "x34")) {
+		cpos = currPos4;
+	}
+	if ((n === "x5") || (n === "x25") || (n === "x35")) {
+		cpos = currPos5;
+	}
+	if ((n === "x6") || (n === "x26") || (n === "x36")) {
+		cpos = currPos6;
+	}
+	if ((n === "x7") || (n === "x27") || (n === "x37")) {
+		cpos = currPos7;
+	}
+	if (n === "x8") {
+		cpos = currPos8;
+	}
+	return cpos
+}
+function getHit(n) {
+	let cHIt;
+	if ( (n === "x1") || (n === "x5") || (n === "x6") || (n === "x2") || 
+		(n === "x21") || (n === "x24") || (n === "x26") || 
+		(n === "x32") || (n === "x33") || (n === "x35") || (n === "x37") ) {
+		cHIt = currHit1;
+	}
+	if ((n === "x7") || (n === "x3") || (n === "x4") || (n === "x8") || 
+		(n === "x22") || (n === "x23") || (n === "x25") || (n === "x27")|| 
+	    (n === "x31") || (n === "x34") || (n === "x36")
+	) {
+		cHIt = currHit2;
+	}
+	return cHIt;
+}
+function getFinalPos(n) {
+	var h;
+	switch (n) {
+		case "x2":
+		case "x21":
+		case "x32":
+			h = [220, 480];
+			break;
+		case "x5":
+		case "x24":
+		case "x33":
+			h = [300, 480];
+			break;
+		case "x6":
+		case "x26":
+		case "x35":
+			h = [380, 480];
+			break;	
+		case "x37":
+		case "x1":
+			h = [460, 480];
+			break;
+		case "x22":
+		case "x31":
+			h = [630, 480];
+			break;
+		case "x3":
+		case "x23":
+		case "x34":
+			h = [700, 480];
+			break;
+		case "x4":
+		case "x25":
+		case "x36":
+			h = [770, 480];
+			break;
+		case "x7":
+		case "x27":
+			h = [840, 480];
+			break;
+		case "x8":
+			h = [910, 480];
+			break;
+	}
+	return h;
+}</script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("59DE45ED79932046AF49E5A5F71EB9A9");
+	var lib=comp.getLibrary();
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();	
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	var preloaderDiv = document.getElementById("_preload_div_");
+	preloaderDiv.style.display = 'none';
+	canvas.style.display = 'block';
+	exportRoot = new lib.index();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();	
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}	    
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(true,'both',true,1,[canvas,preloaderDiv,anim_container,dom_overlay_container]);	
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+}
+</script>
+<!-- write your code here -->
+</head>
+<body onload="init();" style="margin:0px;">
+	<div id="animation_container" style="background-color:rgba(255, 255, 255, 1.00); width:1000px; height:562px">
+		<canvas id="canvas" width="1000" height="562" style="position: absolute; display: none; background-color:rgba(255, 255, 255, 1.00);"></canvas>
+		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1000px; height:562px; position: absolute; left: 0px; top: 0px; display: none;">
+		</div>
+	</div>
+    <div id='_preload_div_' style='position:absolute; top:0; left:0; display: inline-block; height:562px; width: 1000px; text-align: center;'>	<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>	<img src=images/_preloader.gif?1685000389949 style='vertical-align: middle; max-height: 100%'/></div>
+</body>
+</html>
